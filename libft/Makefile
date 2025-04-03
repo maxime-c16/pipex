@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mcauchy <mcauchy@student.42.fr>            +#+  +:+       +#+         #
+#    By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/09 17:39:45 by mcauchy           #+#    #+#              #
-#    Updated: 2025/02/10 12:35:10 by mcauchy          ###   ########.fr        #
+#    Updated: 2025/04/03 13:00:38 by macauchy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ CFLAGS			=	-Wall -Wextra -Werror -g3
 
 HEADER			=	libft.h
 
-all				:	$(NAME)
+all				:	bonus
 
 $(NAME)			:	$(OBJ)
 					@echo "Creating libft.a"
@@ -54,7 +54,7 @@ fclean			:	clean
 
 re				:	fclean all
 
-bonus			:	$(OBJS) $(BONUS_OBJS)
-					@ar rcs $(NAME) $(OBJS) $(BONUS_OBJS)
+bonus			:	$(OBJ) $(BONUS_OBJS)
+					@ar rcs $(NAME) $(OBJ) $(BONUS_OBJS)
 
 .PHONY			:	all clean norme fclean re
