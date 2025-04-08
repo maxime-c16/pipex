@@ -6,7 +6,7 @@
 #    By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/03 13:03:04 by macauchy          #+#    #+#              #
-#    Updated: 2025/04/03 13:12:18 by macauchy         ###   ########.fr        #
+#    Updated: 2025/04/03 14:38:39 by macauchy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ INCLUDE	=	includes/pipex.h
 
 NAME	=	pipex
 CC		=	gcc
-CFLAGS	=	-g3
+CFLAGS	=	-g3 -Wall -Wextra -Werror
 DEBUG	=	-fsanitize=address
 RM		=	/bin/rm -rf
 LDFLAGS	=	 -Llibft -lft
