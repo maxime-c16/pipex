@@ -6,11 +6,11 @@
 #    By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/03 13:03:04 by macauchy          #+#    #+#              #
-#    Updated: 2025/04/03 14:38:39 by macauchy         ###   ########.fr        #
+#    Updated: 2025/05/23 15:47:47 by macauchy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-FILES	=	pipex.c singleton.c
+FILES	=	pipex.c singleton.c exec.c parsing.c pipe.c redir.c utils.c
 SRC_DIR	=	srcs
 SRCS	=	$(addprefix $(SRC_DIR)/, $(FILES))
 OBJ_DIR	=	.objs

@@ -1,33 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 13:02:52 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/23 15:44:10 by macauchy         ###   ########.fr       */
+/*   Created: 2025/05/23 15:43:28 by macauchy          #+#    #+#             */
+/*   Updated: 2025/05/23 15:43:35 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-int	main(int ac, char **av, char **env)
+void	ciao(void)
 {
 	t_pipex	*pipex;
+	int		i;
 
+	i = -1;
 	pipex = _pipex();
-	if (ac != 5)
+	while (pipex->path[++i])
 	{
-		ft_putstr_fd("Usage: ./pipex file1 cmd1 cmd2 file2\n", 2);
-		return (1);
+		free(pipex->path[i]);
+		pipex->path[i] = NULL;
 	}
-	pipex->save_in = dup(STDIN_FILENO);
-	pipex->save_out = dup(STDOUT_FILENO);
-	pipex->nb_cmd = ac - 3;
-	parsing(av, env);
-	pipe_fd();
-	ft_exec();
-	ciao();
-	return (0);
+	free(pipex->path);
+	close(pipex->save_in);
+	close(pipex->save_out);
+	exit(0);
 }
