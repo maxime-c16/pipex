@@ -6,9 +6,17 @@
 #    By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/03 13:03:04 by macauchy          #+#    #+#              #
-#    Updated: 2025/05/23 15:47:47 by macauchy         ###   ########.fr        #
+#    Updated: 2025/05/26 10:27:09 by macauchy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+RESET	= \033[0m
+BOLD	= \033[1m
+RED		= \033[31m
+GREEN	= \033[32m
+YELLOW	= \033[33m
+BLUE	= \033[34m
+CYAN	= \033[36m
 
 FILES	=	pipex.c singleton.c exec.c parsing.c pipe.c redir.c utils.c
 SRC_DIR	=	srcs
@@ -27,28 +35,29 @@ LDFLAGS	=	 -Llibft -lft
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-		@$(MAKE) -j -C libft 2>&1 > /dev/null
-		@echo "\033[32m[libft OK]\033[0m"
+		@$(MAKE) -C libft -q --no-print-directory || (echo "$(BLUE)[Libft]$(RESET) Compiling libft" && $(MAKE) -C libft -j > /dev/null 2>&1)
+		@echo "$(GREEN)[libft OK]$(RESET)"
+		@echo "$(BOLD)$(CYAN)[Link]$(RESET) $(NAME)"
 		@$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
-		@echo "\033[32m[$(NAME) OK]\033[0m"
+		@echo "$(GREEN)Build complete.$(RESET)"
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c $(INCLUDE)
 		@mkdir -p $(OBJ_DIR)
 		@$(CC) $(CFLAGS) -c $< -o $@
-		@echo "\033[32m[$< OK]\033[0m"
+		@echo "$(YELLOW)[Compiling]$(RESET) $<"
 
 debug:	fclean $(OBJS)
-		@$(MAKE) -j -C libft 2>&1 > /dev/null
+		@$(MAKE) -C libft -q --no-print-directory || (echo "$(BLUE)[Libft]$(RESET) Compiling libft" && $(MAKE) -C libft -j > /dev/null 2>&1)
 		@$(CC) $(CFLAGS) $(DEBUG) $(OBJS) $(LDFLAGS) -o $(NAME)
-		@echo "\033[32m[$(NAME) OK (DEBUG MODE)]\033[0m"
-
+		@echo "$(GREEN)[$(NAME) OK (DEBUG MODE)]$(RESET)"
+	
 clean:
-		@$(MAKE) -C libft clean
+		@$(MAKE) -C libft clean > /dev/null 2>&1
 		@$(RM) $(OBJ_DIR)
-		@echo "\033[33m[cleaning $(NAME)]\033[0m"
+		@echo "$(YELLOW)[cleaning $(NAME)]$(RESET)"
 
 fclean: clean
-		@$(MAKE) -C libft fclean
+		@$(MAKE) -C libft fclean > /dev/null 2>&1
 		@$(RM) $(NAME)
 
 re:			fclean all

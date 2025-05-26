@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 13:02:57 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/23 15:39:19 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/26 10:40:13 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ typedef struct s_pipex
 	int				nb_cmd;
 	int				infd;
 	int				outfd;
-	int				fd[4];
-	int				pid[2];
-	struct s_cmd	cmd[2];
+	int				*fd;
+	int				*pid;
+	struct s_cmd	*cmd;
 	int				save_in;
 	int				save_out;
 	char			**env;

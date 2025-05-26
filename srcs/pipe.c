@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:42:30 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/23 15:42:31 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/26 10:56:06 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,20 @@ void	pipe_fd(void)
 	t_pipex	*pipex;
 	int		i;
 
-	pipex = _pipex();
 	i = 0;
+	pipex = _pipex();
+	pipex->fd = (int *)malloc(sizeof(int) * (pipex->nb_cmd - 1) * 2);
+	if (!pipex->fd)
+	{
+		ft_putstr_fd("Error: malloc failed\n", 2);
+		ciao();
+	}
+	pipex->pid = (int *)malloc(sizeof(int) * pipex->nb_cmd);
+	if (!pipex->pid)
+	{
+		ft_putstr_fd("Error: malloc failed\n", 2);
+		ciao();
+	}
 	while (i < pipex->nb_cmd - 1)
 	{
 		if (pipe(pipex->fd + (i * 2)) == -1)

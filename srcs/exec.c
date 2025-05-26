@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:42:40 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/23 15:42:49 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/26 16:16:43 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,9 @@ void	ft_waitpid(void)
 	i = -1;
 	pipex = _pipex();
 	while (++i < pipex->nb_cmd)
-	{
 		waitpid(pipex->pid[i], &status, 0);
-	}
-	ft_putstr_fd("All child processes exited successfully\n", 2);
+	if (WIFEXITED(status))
+		exit(WEXITSTATUS(status));
 }
 
 void	ft_exec(void)

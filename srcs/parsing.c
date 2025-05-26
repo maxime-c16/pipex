@@ -6,34 +6,84 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:41:55 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/23 15:42:10 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/26 16:18:41 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
+static void	init_cmd_struct(t_pipex *pipex, char **av)
+{
+	int	i;
+
+	i = 0;
+	pipex->cmd = (t_cmd *)malloc(sizeof(t_cmd) * pipex->nb_cmd);
+	if (!pipex->cmd)
+	{
+		ft_putstr_fd("Error: malloc failed\n", 2);
+		ciao();
+	}
+	pipex->cmd[0].redir = ft_strdup(av[1]);
+	pipex->cmd[pipex->nb_cmd - 1].redir = ft_strdup(av[pipex->nb_cmd + 2]);
+	while (i < pipex->nb_cmd)
+	{
+		if (ft_strlen(av[i + 2]) == 0)
+		{
+			ft_putstr_fd("Error: empty command\n", 2);
+			exit(127);
+		}
+		pipex->cmd[i].cmd = ft_split(av[i + 2], ' ');
+		if (!pipex->cmd[i].cmd)
+		{
+			ft_putstr_fd("Error: malloc failed\n", 2);
+			ciao();
+		}
+		if (i != 0 && i != pipex->nb_cmd - 1)
+			pipex->cmd[i].redir = NULL;
+		i++;
+	}
+}
+
+static int	is_absolute_path(const char *cmd)
+{
+	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/'))
+		return (1);
+	return (0);
+}
+
+static void	resolve_cmd_paths(t_pipex *pipex)
+{
+	int	i;
+
+	i = 0;
+	while (i < pipex->nb_cmd)
+	{
+		if (is_absolute_path(pipex->cmd[i].cmd[0]))
+		{
+			if (access(pipex->cmd[i].cmd[0], F_OK | X_OK) == 0)
+			{
+				pipex->cmd[i].path = ft_strdup(pipex->cmd[i].cmd[0]);
+			}
+			else
+			{
+				ft_putstr_fd("Error: command not found\n", 2);
+				exit(127);
+			}
+		}
+		else
+			access_path(i);
+		i++;
+	}
+}
+
 void	parsing(char **av, char **env)
 {
 	t_pipex	*pipex;
-	int		i;
 
-	i = 0;
 	pipex = _pipex();
-	pipex->cmd[0].cmd = ft_split(av[2], ' ');
-	pipex->cmd[1].cmd = ft_split(av[3], ' ');
-	if (!pipex->cmd[0].cmd || !pipex->cmd[1].cmd)
-	{
-		ft_putstr_fd("Error: malloc failed\n", 2);
-		exit(1);
-	}
-	pipex->cmd[0].redir = ft_strdup(av[1]);
-	pipex->cmd[1].redir = ft_strdup(av[4]);
+	init_cmd_struct(pipex, av);
 	find_path(env);
-	while (i < pipex->nb_cmd)
-	{
-		access_path(i);
-		i++;
-	}
+	resolve_cmd_paths(pipex);
 }
 
 void	find_path(char **env)
@@ -53,7 +103,7 @@ void	find_path(char **env)
 				ft_putstr_fd("Error: malloc failed\n", 2);
 				exit(1);
 			}
-			break;
+			break ;
 		}
 	}
 	if (!pipex->path)
@@ -90,7 +140,7 @@ void	access_path(int index)
 		{
 			pipex->cmd[index].path = ft_strdup(tmp);
 			free(tmp);
-			break;
+			break ;
 		}
 		free(tmp);
 		i++;
@@ -98,6 +148,6 @@ void	access_path(int index)
 	if (!pipex->cmd[index].path)
 	{
 		ft_putstr_fd("Error: command not found\n", 2);
-		ciao();
+		exit(127);
 	}
 }
