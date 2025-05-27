@@ -6,17 +6,34 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:41:55 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/27 13:17:14 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:42:56 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-static void	init_cmd_struct(t_pipex *pipex, char **av)
+static void	split_cmd(char **av, int j)
 {
-	int	i;
+	t_pipex	*pipex;
+	int		i;
 
 	i = 0;
+	i += j;
+	pipex = _pipex();
+	while (i < pipex->nb_cmd)
+	{
+		pipex->cmd[i].cmd = ft_split(av[i + 2 + j], ' ');
+		if (!pipex->cmd[i].cmd)
+		{
+			ft_putstr_fd("Error: malloc failed\n", 2);
+			ciao(EXIT_FAILURE);
+		}
+		i++;
+	}
+}
+
+static void	init_cmd_struct(t_pipex *pipex, char **av)
+{
 	pipex->cmd = (t_cmd *)malloc(sizeof(t_cmd) * pipex->nb_cmd);
 	if (!pipex->cmd)
 	{
@@ -26,18 +43,27 @@ static void	init_cmd_struct(t_pipex *pipex, char **av)
 	ft_bzero(pipex->cmd, sizeof(t_cmd) * pipex->nb_cmd);
 	pipex->cmd[0].redir = ft_strdup(av[1]);
 	pipex->cmd[pipex->nb_cmd - 1].redir = ft_strdup(av[pipex->nb_cmd + 2]);
-	while (i < pipex->nb_cmd)
+	split_cmd(av, 0);
+}
+
+static void	init_heredoc(t_pipex *pipex, char **av)
+{
+	pipex->nb_cmd -= 1;
+	pipex->cmd = (t_cmd *)malloc(sizeof(t_cmd) * (pipex->nb_cmd + 1));
+	if (!pipex->cmd)
 	{
-		pipex->cmd[i].cmd = ft_split(av[i + 2], ' ');
-		if (!pipex->cmd[i].cmd)
-		{
-			ft_putstr_fd("Error: malloc failed\n", 2);
-			ciao(EXIT_FAILURE);
-		}
-		if (i != 0 && i != pipex->nb_cmd - 1)
-			pipex->cmd[i].redir = NULL;
-		i++;
+		ft_putstr_fd("Error: malloc failed\n", 2);
+		ciao(EXIT_FAILURE);
 	}
+	ft_bzero(pipex->cmd, sizeof(t_cmd) * (pipex->nb_cmd + 1));
+	pipex->cmd[0].limiter = ft_strdup(av[2]);
+	pipex->cmd[0].cmd = ft_split(av[3], ' ');
+	if (!pipex->cmd[0].cmd)
+	{
+		ft_putstr_fd("Error: malloc failed\n", 2);
+		ciao(EXIT_FAILURE);
+	}
+	split_cmd(av + 1, 1);
 }
 
 static int	is_absolute_path(const char *cmd)
@@ -78,7 +104,10 @@ void	parsing(char **av, char **env)
 	t_pipex	*pipex;
 
 	pipex = _pipex();
-	init_cmd_struct(pipex, av);
+	if (ft_strcmp(av[1], "here_doc") == 0)
+		init_heredoc(pipex, av);
+	else
+		init_cmd_struct(pipex, av);
 	find_path(env);
 }
 

@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 13:02:57 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/27 13:26:30 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:12:54 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ typedef struct s_cmd
 	char	**cmd;
 	char	*path;
 	char	*redir;
+	char	*limiter;
+	int		heredoc_fd;
 }			t_cmd;
 
 typedef struct s_pipex

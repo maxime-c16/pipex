@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:43:28 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/27 13:44:48 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/27 14:55:16 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ void	ciao(int status)
 	i = 0;
 	while (i < pipex->nb_cmd)
 	{
-		if (!pipex->cmd)
-			break ;
 		if (pipex->cmd[i].cmd)
 		{
 			free_tab(pipex->cmd[i].cmd);
@@ -60,9 +58,9 @@ void	ciao(int status)
 	free(pipex->cmd);
 	free(pipex->fd);
 	free(pipex->pid);
-	close(pipex->save_in);
-	close(pipex->save_out);
-	close(pipex->infd);
-	close(pipex->outfd);
+	if (pipex->infd != -1)
+		close(pipex->infd);
+	if (pipex->outfd != -1)
+		close(pipex->outfd);
 	exit(status);
 }

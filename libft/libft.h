@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/14 12:45:04 by mcauchy           #+#    #+#             */
-/*   Updated: 2025/04/03 14:29:04 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:59:26 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 # include <stdlib.h>
 # include <string.h>
 # include <strings.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
 
 typedef struct s_list
 {
@@ -78,5 +82,14 @@ int		ft_lstsize(t_list *lst);
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 t_list	*ft_lstnew(void *content);
 t_list	*ft_lstlast(t_list *lst);
+
+// get_next_line
+
+char	*get_next_line(int fd);
+int		has_newline(char *str);
+int		gnl_ft_strlen(char *str);
+char	*gnl_ft_strdup(char *str);
+char	*gnl_ft_strjoin(char *s1, char *s2);
+
 
 #endif

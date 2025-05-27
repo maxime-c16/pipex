@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:42:58 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/27 13:34:48 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:29:15 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	open_redir(int index)
 	t_pipex	*pipex;
 
 	pipex = _pipex();
-	if (index == 0)
+	if (index == 0 && pipex->cmd[0].redir && !pipex->cmd[0].limiter)
 	{
 		pipex->infd = open(pipex->cmd[0].redir, O_RDONLY);
 		if (pipex->infd == -1)
@@ -25,6 +25,25 @@ void	open_redir(int index)
 			ft_putstr_fd("Pipex: ", 2);
 			ft_putstr_fd(pipex->cmd[0].redir, 2);
 			ft_putstr_fd(": Permission denied\n", 2);
+			close_fds();
+			ciao(1);
+		}
+	}
+	else if (index == 0 && pipex->cmd[0].limiter)
+	{
+		pipex->infd = pipex->cmd[0].heredoc_fd;
+		if (pipex->infd == -1)
+		{
+			ft_putstr_fd("Pipex: Heredoc failed\n", 2);
+			close_fds();
+			ciao(1);
+		}
+	}
+	else if (index > 0 && index < pipex->nb_cmd - 1)
+	{
+		if (pipex->fd[(index - 1) * 2 + 1] == -1)
+		{
+			ft_putstr_fd("Pipex: Pipe failed\n", 2);
 			close_fds();
 			ciao(1);
 		}
