@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:41:55 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/26 16:18:41 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/27 13:17:14 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,18 @@ static void	init_cmd_struct(t_pipex *pipex, char **av)
 	if (!pipex->cmd)
 	{
 		ft_putstr_fd("Error: malloc failed\n", 2);
-		ciao();
+		ciao(EXIT_FAILURE);
 	}
+	ft_bzero(pipex->cmd, sizeof(t_cmd) * pipex->nb_cmd);
 	pipex->cmd[0].redir = ft_strdup(av[1]);
 	pipex->cmd[pipex->nb_cmd - 1].redir = ft_strdup(av[pipex->nb_cmd + 2]);
 	while (i < pipex->nb_cmd)
 	{
-		if (ft_strlen(av[i + 2]) == 0)
-		{
-			ft_putstr_fd("Error: empty command\n", 2);
-			exit(127);
-		}
 		pipex->cmd[i].cmd = ft_split(av[i + 2], ' ');
 		if (!pipex->cmd[i].cmd)
 		{
 			ft_putstr_fd("Error: malloc failed\n", 2);
-			ciao();
+			ciao(EXIT_FAILURE);
 		}
 		if (i != 0 && i != pipex->nb_cmd - 1)
 			pipex->cmd[i].redir = NULL;
@@ -51,29 +47,30 @@ static int	is_absolute_path(const char *cmd)
 	return (0);
 }
 
-static void	resolve_cmd_paths(t_pipex *pipex)
+void	resolve_cmd_paths(int index)
 {
-	int	i;
+	t_pipex	*pipex;
 
-	i = 0;
-	while (i < pipex->nb_cmd)
+	pipex = _pipex();
+	if (!pipex->cmd[index].cmd[0])
 	{
-		if (is_absolute_path(pipex->cmd[i].cmd[0]))
-		{
-			if (access(pipex->cmd[i].cmd[0], F_OK | X_OK) == 0)
-			{
-				pipex->cmd[i].path = ft_strdup(pipex->cmd[i].cmd[0]);
-			}
-			else
-			{
-				ft_putstr_fd("Error: command not found\n", 2);
-				exit(127);
-			}
-		}
-		else
-			access_path(i);
-		i++;
+		ft_putstr_fd("Pipex: Command not found\n", 2);
+		ciao(127);
 	}
+	if (is_absolute_path(pipex->cmd[index].cmd[0]))
+	{
+		if (access(pipex->cmd[index].cmd[0], F_OK | X_OK) == 0)
+			pipex->cmd[index].path = ft_strdup(pipex->cmd[index].cmd[0]);
+		else
+		{
+			ft_putstr_fd("Pipex: ", 2);
+			ft_putstr_fd(pipex->cmd[index].cmd[0], 2);
+			ft_putstr_fd(": No such file or directory\n", 2);
+			ciao(127);
+		}
+	}
+	else
+		access_path(index);
 }
 
 void	parsing(char **av, char **env)
@@ -83,7 +80,6 @@ void	parsing(char **av, char **env)
 	pipex = _pipex();
 	init_cmd_struct(pipex, av);
 	find_path(env);
-	resolve_cmd_paths(pipex);
 }
 
 void	find_path(char **env)
@@ -147,7 +143,9 @@ void	access_path(int index)
 	}
 	if (!pipex->cmd[index].path)
 	{
-		ft_putstr_fd("Error: command not found\n", 2);
-		exit(127);
+		ft_putstr_fd("Pipex: ", 2);
+		ft_putstr_fd(pipex->cmd[index].cmd[0], 2);
+		ft_putstr_fd(": Command not found\n", 2);
+		ciao(127);
 	}
 }

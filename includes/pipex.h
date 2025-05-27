@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 13:02:57 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/26 10:40:13 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/05/27 13:26:30 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,14 @@ typedef struct s_pipex
 	struct s_cmd	*cmd;
 	int				save_in;
 	int				save_out;
-	char			**env;
 	char			**path;
 }					t_pipex;
 
 t_pipex	*_pipex(void);
-void	ciao(void);
+void	ciao(int status);
 void	find_path(char **env);
 char	*cat_path_cmd(char *path, char *cmd);
+void	resolve_cmd_paths(int index);
 void	access_path(int index);
 void	parsing(char **av, char **env);
 void	pipe_fd(void);
@@ -54,8 +54,9 @@ void	close_fds(void);
 void	duplicate_fds(int i);
 void	exec_input_redir(void);
 void	exec_redir(int i);
-void	ft_exec_pipe(int i);
+void	ft_exec_pipe(int i, char **env);
 void	ft_waitpid(void);
-void	ft_exec(void);
+void	ft_exec(char **env);
+void	open_redir(int index);
 
 #endif
