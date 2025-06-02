@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 13:02:52 by macauchy          #+#    #+#             */
-/*   Updated: 2025/06/02 11:33:39 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:02:34 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	main(int ac, char **av, char **env)
 	pipex = _pipex();
 	if (ac != 5)
 	{
-		ft_putstr_fd("Usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2\n", 2);
+		ft_putstr_fd("Usage: ./pipex file1 cmd1 cmd2 file2\n", 2);
 		return (1);
 	}
 	pipex->nb_cmd = ac - 3;
