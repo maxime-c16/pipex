@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 13:02:57 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/27 15:12:54 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:33:54 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ typedef struct s_cmd
 	char	**cmd;
 	char	*path;
 	char	*redir;
-	char	*limiter;
-	int		heredoc_fd;
 }			t_cmd;
 
 typedef struct s_pipex
@@ -54,11 +52,11 @@ void	parsing(char **av, char **env);
 void	pipe_fd(void);
 void	close_fds(void);
 void	duplicate_fds(int i);
-void	exec_input_redir(void);
 void	exec_redir(int i);
 void	ft_exec_pipe(int i, char **env);
 void	ft_waitpid(void);
 void	ft_exec(char **env);
 void	open_redir(int index);
+void	print_tab(char **tab);
 
 #endif

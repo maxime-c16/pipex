@@ -6,11 +6,26 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:43:28 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/27 14:55:16 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:23:40 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
+
+void	print_tab(char **tab)
+{
+	int	i;
+
+	if (!tab)
+		return ;
+	i = 0;
+	while (tab[i])
+	{
+		ft_putstr_fd(tab[i], 1);
+		ft_putchar_fd('\n', 1);
+		i++;
+	}
+}
 
 void	free_tab(char **tab)
 {
@@ -27,14 +42,10 @@ void	free_tab(char **tab)
 	free(tab);
 }
 
-void	ciao(int status)
+static void	free_cmd_structs(t_pipex *pipex)
 {
-	t_pipex	*pipex;
-	int		i;
+	int	i;
 
-	i = -1;
-	pipex = _pipex();
-	free_tab(pipex->path);
 	i = 0;
 	while (i < pipex->nb_cmd)
 	{
@@ -55,6 +66,12 @@ void	ciao(int status)
 		}
 		i++;
 	}
+}
+
+static void	free_pipex_resources(t_pipex *pipex)
+{
+	free_tab(pipex->path);
+	free_cmd_structs(pipex);
 	free(pipex->cmd);
 	free(pipex->fd);
 	free(pipex->pid);
@@ -62,5 +79,13 @@ void	ciao(int status)
 		close(pipex->infd);
 	if (pipex->outfd != -1)
 		close(pipex->outfd);
+}
+
+void	ciao(int status)
+{
+	t_pipex	*pipex;
+
+	pipex = _pipex();
+	free_pipex_resources(pipex);
 	exit(status);
 }

@@ -6,7 +6,7 @@
 /*   By: macauchy <macauchy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 15:42:40 by macauchy          #+#    #+#             */
-/*   Updated: 2025/05/27 16:08:56 by macauchy         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:24:28 by macauchy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,71 +62,6 @@ void	ft_waitpid(void)
 		ciao(WEXITSTATUS(last_status));
 }
 
-static void	write_forked(void)
-{
-	t_pipex	*pipex;
-	char	*line;
-
-	pipex = _pipex();
-	while (1)
-	{
-		line = get_next_line(0);
-		if (!line)
-			break;
-		// Remove trailing newline if present
-		size_t len = ft_strlen(line);
-		if (len > 0 && line[len - 1] == '\n')
-			line[len - 1] = '\0';
-		if (ft_strcmp(line, pipex->cmd[0].limiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		line[len - 1] = '\n'; // Restore newline for writing
-		ft_putstr_fd(line, pipex->cmd[0].heredoc_fd);
-		free(line);
-	}
-	close(pipex->cmd[0].heredoc_fd);
-	unlink("heredoc_tmp");
-}
-
-static void	write_hd(void)
-{
-	int	pid;
-
-	pid = fork();
-	if (pid == -1)
-	{
-		ft_putstr_fd("Pipex: fork failed\n", 2);
-		ciao(1);
-	}
-	if (pid == 0)
-	{
-		write_forked();
-		close(_pipex()->cmd[0].heredoc_fd);
-	}
-	else
-		waitpid(pid, NULL, 0);
-}
-
-
-static void	open_heredoc(void)
-{
-	t_pipex	*pipex;
-
-	pipex = _pipex();
-	if (pipex->cmd[0].limiter)
-	{
-		pipex->cmd[0].heredoc_fd = open("heredoc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (pipex->cmd[0].heredoc_fd == -1)
-		{
-			ft_putstr_fd("Pipex: heredoc_tmp: Permission denied\n", 2);
-			ciao(1);
-		}
-		write_hd();
-	}
-}
-
 void	ft_exec(char **env)
 {
 	t_pipex	*pipex;
@@ -134,7 +69,6 @@ void	ft_exec(char **env)
 
 	i = 0;
 	pipex = _pipex();
-	open_heredoc();
 	while (i < pipex->nb_cmd)
 	{
 		ft_exec_pipe(i, env);
